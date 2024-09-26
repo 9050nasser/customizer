@@ -1,0 +1,26 @@
+{
+ "attach_print": 0,
+ "channel": "Email",
+ "creation": "2021-09-20 11:36:50.359435",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Administrative Communication",
+ "enabled": 1,
+ "event": "Save",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "Add your message here",
+ "modified": "2021-09-20 11:37:17.941743",
+ "modified_by": "Administrator",
+ "module": "Customizer",
+ "name": "test",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "email_by_document_field": "owner"
+  }
+ ],
+ "set_property_after_alert": "",
+ "subject": "{{ doc.name }} you have new message"
+}

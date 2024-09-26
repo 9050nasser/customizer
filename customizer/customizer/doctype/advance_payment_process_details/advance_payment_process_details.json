@@ -1,0 +1,56 @@
+{
+ "creation": "2021-06-12 11:02:45.077803",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "account",
+  "current_value",
+  "payment"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "current_value",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Current Value",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "payment",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Payment",
+   "reqd": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-06-12 11:06:30.317393",
+ "modified_by": "Administrator",
+ "module": "Customizer",
+ "name": "Advance Payment Process Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

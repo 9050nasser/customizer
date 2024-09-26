@@ -1,0 +1,29 @@
+{
+ "creation": "2021-08-30 11:27:32.386484",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "user"
+ ],
+ "fields": [
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "User",
+   "reqd": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-10-20 09:57:54.018819",
+ "modified_by": "Administrator",
+ "module": "Customizer",
+ "name": "Recipient",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

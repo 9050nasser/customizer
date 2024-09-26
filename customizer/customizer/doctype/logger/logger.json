@@ -1,0 +1,57 @@
+{
+ "creation": "2023-08-08 18:57:58.949871",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sent",
+  "received"
+ ],
+ "fields": [
+  {
+   "fieldname": "sent",
+   "fieldtype": "Long Text",
+   "label": "Sent"
+  },
+  {
+   "fieldname": "received",
+   "fieldtype": "Long Text",
+   "label": "Received"
+  }
+ ],
+ "modified": "2023-08-08 19:49:17.152086",
+ "modified_by": "Administrator",
+ "module": "Customizer",
+ "name": "Logger",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

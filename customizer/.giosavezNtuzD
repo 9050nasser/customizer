@@ -1,0 +1,403 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+import frappe
+from frappe import _
+import json
+from frappe.utils import cint, getdate, formatdate,get_datetime
+from datetime import tzinfo, timedelta, datetime
+from dateutil import parser
+from datetime import date
+from dateutil.relativedelta import relativedelta
+from frappe.utils import cint, cstr, date_diff, flt, formatdate, getdate, get_link_to_form, \
+    comma_or, get_fullname, add_years, add_months, add_days, nowdate , comma_and, get_first_day, get_last_day
+from frappe.model.mapper import get_mapped_doc
+import datetime
+from frappe.core.doctype.communication.email import make
+from frappe.desk.form.load import get_attachments
+import  erpnext
+import frappe.defaults
+from frappe import _
+from frappe.utils import cstr, cint, flt, comma_or, getdate, nowdate, formatdate, format_time
+from erpnext.stock.utils import get_incoming_rate
+from erpnext.stock.stock_ledger import get_previous_sle, NegativeStockError, get_valuation_rate
+from erpnext.stock.get_item_details import get_bin_details, get_default_cost_center, get_conversion_factor, get_reserved_qty_for_so
+from erpnext.setup.doctype.item_group.item_group import get_item_group_defaults
+from erpnext.setup.doctype.brand.brand import get_brand_defaults
+from erpnext.stock.doctype.batch.batch import get_batch_no, set_batch_nos, get_batch_qty
+from erpnext.stock.doctype.item.item import get_item_defaults
+from erpnext.manufacturing.doctype.bom.bom import validate_bom_no, add_additional_cost
+from erpnext.stock.utils import get_bin
+from frappe.model.mapper import get_mapped_doc
+from erpnext.stock.doctype.serial_no.serial_no import update_serial_nos_after_submit, get_serial_nos
+from erpnext.stock.doctype.stock_reconciliation.stock_reconciliation import OpeningEntryAccountError
+import json
+from six import string_types, itervalues, iteritems
+from frappe.database import get_db
+
+
+
+import frappe
+
+def get_all_doctypes_in_module(module_name=None):
+    """
+    Fetch all doctypes in a specific module, or in all modules if module_name is None.
+
+    Args:
+    module_name (str, optional): The name of the module to filter doctypes. Defaults to None.
+
+    Returns:
+    list: A list of doctype names.
+    """
+    filters = {}
+    if module_name:
+        filters['module'] = module_name
+
+    doctypes = frappe.get_all('DocType', filters=filters, fields=['name'])
+    return [doctype.name for doctype in doctypes]
+
+def format_mysqldump_commands_for_module(module_name=None):
+    parent_doctypes = get_all_doctypes_in_module(module_name)
+    for parent_doctype in parent_doctypes:
+        child_tables = get_child_tables_for_doctype(parent_doctype)
+        if child_tables:  # Proceed only if there are child tables
+            mysqldump_command = f"mysqldump -u username -p --no-create-info database_name"
+
+            # Add each child table name
+            for table in child_tables:
+                mysqldump_command += f" '{table}'"
+            
+            # Specify the output file
+            mysqldump_command += f" > {parent_doctype}.sql"
+            
+            print(mysqldump_command)
+
+
+def get_child_tables_for_doctype(parent_doctype):
+    """
+    Function to get all child tables linked to a parent doctype.
+
+    Args:
+    parent_doctype (str): The name of the parent doctype.
+
+    Returns:
+    list: A list of child table doctypes associated with the parent doctype.
+    """
+    # Fetch all fields of the parent doctype that are of type 'Table'
+    child_tables = frappe.get_all('DocField', fields=['options'], filters={
+        'parent': parent_doctype,
+        'fieldtype': 'Table'
+    })
+
+    # Extract the names of the child tables from the 'options' field
+    child_table_names = [field.options for field in child_tables]
+
+    return child_table_names
+
+def run_info(parent_doctype):
+    child_tables = get_child_tables_for_doctype(parent_doctype)
+    # Prepare the base of the mysqldump command
+    mysqldump_command = f"mysqldump -u username -p --no-create-info database_name"
+    
+    # Add each child table name, enclosed in quotes
+    for table in child_tables:
+        mysqldump_command += f" '{table}'"
+    
+    # Specify the output file at the end
+    mysqldump_command += f" > {parent_doctype}.sql"
+    
+    print(mysqldump_command)
+
+
+def submitmr():
+	doc=frappe.get_doc("Stock Reconciliation","MAT-RECO-2024-00419")
+	#on_submit_stock_reconciliation(doc)
+	doc.submit()
+	print("done")
+
+def submitse():
+	doc=frappe.get_doc("Stock Entry","MAT-STE-2024-00648")
+	#on_submit_stock_reconciliation(doc)
+	doc.submit()
+	print("done")
+
+def on_submit_stock_reconciliation(self):
+    for d in self.get("items"):
+            if d.batch_no:
+                    existing_batch = frappe.get_all("Batch", filters={"item": d.item_code, "name": d.batch_no}, fields=["name"])
+                    if not existing_batch:
+                            create_batch_entry(d)
+                            print("Batch '{}' created for item '{}' with batch number '{}'.".format(d.name, d.item_code, d.batch_no))
+
+
+def create_batch_entry(d):
+    batch_entry = frappe.new_doc("Batch")
+    batch_entry.name = d.batch_no
+    batch_entry.item = d.item_code
+    #batch_entry.expiry_date = "2024-12-31"
+    batch_entry.batch_id = d.batch_no
+    batch_entry.insert(ignore_permissions=True)
+    frappe.db.commit()
+
+@frappe.whitelist(allow_guest=True)
+def edit_journal_entry(journal_name):
+    doc = frappe.get_doc("Journal Entry", journal_name)
+    doc.cancel()
+
+    frappe.db.sql("update `tabJournal Entry` set docstatus=0 where name='{0}'".format(journal_name))
+    return 'True'
+						
+
+def validate_phone(doc, method):
+    import re
+    regex = r"^((\+9665)|(05))[0|3-9][0-9]{7}$"
+    for d in doc.get("phone_nos"):
+        test_str = d.phone
+        matches = re.match(regex, test_str)
+        
+        if not matches :
+            frappe.throw("""Bad Phone Number {0}""".format(d.phone))
+    
+def get_zero_vat(doc, method):
+    total_zero_vat_amount = 0
+
+    for i in range(len(doc.sales_invoices_summary)):
+        invoice_name = doc.sales_invoices_summary[i].invoice
+        invoice_doc = frappe.get_doc("Sales Invoice", invoice_name)
+        for l in range(len(invoice_doc.items)):
+
+            if invoice_doc.items[l].item_tax_template=='0%':
+                total_zero_vat_amount = total_zero_vat_amount + invoice_doc.items[l].net_amount
+    # doc.total_zero_vat = total_zero_vat_amount
+    # doc.save(ignore_permissions=True)
+    frappe.db.sql("update `tabPOS Closing Voucher` set total_zero_vat='{0}' where name='{1}'".format(total_zero_vat_amount, doc.name))
+    frappe.db.commit()
+    
+def overrid_validate(doc, method):
+    doc.validate = pos_closing_validate(doc)
+
+def pos_closing_validate(self):
+    from erpnext.selling.doctype.pos_closing_voucher.pos_closing_voucher import get_invoices
+    self.validate_difference()
+    self.validate_collected_amount()
+    filters = {
+			'doc': self.name,
+			'from_date': self.period_start_date,
+			'to_date': self.period_end_date,
+			'company': self.company,
+			'pos_profile': self.pos_profile,
+			'user': self.user,
+			'is_pos': 1
+		}
+    # ~ invoice_list = get_invoices(filters)
+    # ~ self.set_invoice_list(invoice_list)
+
+
+@frappe.whitelist()
+def pos_cv_get_closing_voucher_details(data):
+    import json
+    from erpnext.selling.doctype.pos_closing_voucher.pos_closing_voucher import get_sales_summary,get_tax_details,get_mode_of_payment_details
+    # ~ from types import SimpleNamespace
+    # ~ self = json.loads(data, object_hook=lambda d: SimpleNamespace(**d))
+    self =frappe.get_doc(json.loads(data))
+    
+    filters = {
+        'doc': self.name,
+        'from_date': self.period_start_date,
+        'to_date': self.period_end_date,
+        'company': self.company,
+        'pos_profile': self.pos_profile,
+        'user': self.user,
+        'is_pos': 1
+    }
+
+    invoice_list = get_invoices(filters)
+    self.set_invoice_list(invoice_list)
+
+    sales_summary = get_sales_summary(invoice_list)
+    self.set_sales_summary_values(sales_summary)
+    self.total_amount = sales_summary['grand_total']
+    self.validate_difference()
+    self.validate_collected_amount()
+    
+    if not self.get('payment_reconciliation'):
+        mop = get_mode_of_payment_details(invoice_list)
+        self.set_mode_of_payments(mop)
+
+    taxes = get_tax_details(invoice_list)
+    self.set_taxes(taxes)
+
+    return self.get_payment_reconciliation_details()
+
+
+
+
+
+# @frappe.whitelist()
+# def edit_journal_entry(journal_name):
+#     doc = frappe.get_doc("Journal Entry", journal_name)
+#     # doc.docstatus = 0
+#     doc.cancle()
+#     # doc.save(ignore_permissions=True)
+#     return True
+
+    
+
+@frappe.whitelist()
+def get_salary_components():
+    return frappe.db.sql("""select name, type, salary_component_abbr, amount 
+        from `tabSalary Component` where salary_component_abbr in ('B', 'T', 'H', 'GOSI')""", as_dict = True)
+
+def add_salary_structure_assignment(doc, method):
+    
+    if not frappe.db.exists("Salary Structure Assignment", {"employee": doc.employee, "docstatus": 1}):
+        frappe.get_doc({
+            "doctype":"Salary Structure Assignment",
+            "employee": doc.employee,
+            "salary_structure": doc.name,
+            "from_date": doc.date_of_joining,
+            "docstatus": 1
+        }).insert(ignore_permissions=True)
+    else:
+        salary_structure_name = frappe.get_value("Salary Structure Assignment", filters = {"employee": doc.employee, "docstatus": 1}, fieldname = "salary_structure")
+
+        frappe.throw("""Employee {0} is assigned to salary structure <b><a href="#Form/Salary Structure/{1}">{1}</a></b>""".format(doc.employee, salary_structure_name))
+
+def remove_ss_validate(doc, method):
+    doc.flags.ignore_validate_update_after_submit = True
+
+
+@frappe.whitelist()
+def make_salary_slip(source_name, target_doc = None, employee = None, as_print = False, print_format = None):
+    def postprocess(source, target):
+        if employee:
+            employee_details = frappe.db.get_value("Employee", employee,
+                ["employee_name", "branch", "designation", "department"], as_dict=1)
+            target.employee = employee
+            target.employee_name = employee_details.employee_name
+            target.branch = employee_details.branch
+            target.designation = employee_details.designation
+            target.department = employee_details.department
+        target.run_method('process_salary_structure')
+
+    doc = get_mapped_doc("Salary Structure", source_name, {
+        "Salary Structure": {
+            "doctype": "Salary Slip",
+            "field_map": {
+                "total_earning": "gross_pay",
+                "name": "salary_structure"
+            }
+        }
+    }, target_doc, postprocess, ignore_permissions=True, ignore_child_tables=True)
+
+    if cint(as_print):
+        doc.name = 'Preview for {0}'.format(employee)
+        return frappe.get_print(doc.doctype, doc.name, doc = doc, print_format = print_format)
+    else:
+        return doc
+
+
+def make_ticket_expense_claim(doc, method):
+
+    leave_allocation_records = get_leave_allocation_records(nowdate(), doc.employee, "Annual Leave - اجازة اعتيادية")
+    if leave_allocation_records:
+        from_date = leave_allocation_records[doc.employee]["Annual Leave - اجازة اعتيادية"].from_date
+        to_date = leave_allocation_records[doc.employee]["Annual Leave - اجازة اعتيادية"].to_date
+
+        existing_leaves = []
+        existing_leaves = frappe.db.sql(""" select name from `tabLeave Application` where employee='{0}' and 
+            country!='Saudi Arabia' and leave_type='Annual Leave - اجازة اعتيادية' and total_leave_days >=15 and 
+            to_date between '{1}' and '{2}' and docstatus=1 and name != '{3}' and employee_ticket_price > 0 """.format(doc.employee, from_date, to_date, doc.name))
+
+        emp = frappe.get_doc("Employee", doc.employee)
+        # number_of_ticket = 1
+
+        # for family in doc.family_details:
+        #     if family.select:
+        #         number_of_ticket = 2
+
+        # if existing_leaves >= 1:
+        #     frappe.throw(_("Employee already has applied for leave application etitlement"))
+        if not existing_leaves and doc.country != 'Saudi Arabia' and doc.leave_type=='Annual Leave - اجازة اعتيادية' and flt(doc.employee_ticket_price) > 0:
+            if doc.total_leave_days>=15 and doc.total_leave_days<30:
+                exp_claim = frappe.get_doc({
+                    "doctype":"Expense Claim",
+                    "employee": doc.employee,
+                    "remark": doc.description,
+                    "approval_status": 'Approved'
+                })
+
+                if doc.employee_ticket_price:
+                    exp_claim.append("expenses", {
+                        "expense_date": doc.from_date,
+                        "description": _("Employee Ticket Price"),
+                        "expense_type": 'Ticket',
+                        "amount": doc.employee_ticket_price,
+                        "sanctioned_amount": doc.employee_ticket_price
+                    })
+                if doc.family_member_ticket_price:
+                    exp_claim.append("expenses", {
+                        "expense_date": doc.from_date,
+                        "description": _("Wife Hasband Ticket Price"),
+                        "expense_type": 'Ticket',
+                        "amount": doc.family_member_ticket_price,
+                        "sanctioned_amount": doc.family_member_ticket_price
+                    })
+
+                exp_claim.insert(ignore_permissions=True)
+                frappe.db.commit()
+                # update_salary_structure_status(doc.employee)
+                
+
+                frappe.msgprint("Expense Claim <b><a href='#Form/Expense Claim/{0}'>{0}</a></b> is created".format(exp_claim.name))
+
+            elif doc.total_leave_days>=30 and getdate(doc.from_date).day-1==0:
+                exp_claim = frappe.get_doc({
+                    "doctype":"Expense Claim",
+                    "employee": doc.employee,
+                    "remark": doc.description,
+                    "expenses": [
+                          {
+                            "doctype": "Expense Claim Detail",
+                            "expense_date": doc.from_date,
+                            "expense_type": 'Month Salary',
+                            "amount": get_salary(doc.employee),
+                            "sanctioned_amount": get_salary(doc.employee)
+                          }
+                    ],
+                    "approval_status": 'Approved'
+                })
+                if doc.employee_ticket_price:
+                    exp_claim.append("expenses", {
+                        "expense_date": doc.from_date,
+                        "description": _("Employee Ticket Price"),
+                        "expense_type": 'Ticket',
+                        "amount": doc.employee_ticket_price,
+                        "sanctioned_amount": doc.employee_ticket_price
+                    })
+                if doc.family_member_ticket_price:
+                    exp_claim.append("expenses", {
+                        "expense_date": doc.from_date,
+                        "description": _("Wife Hasband Ticket Price"),
+                        "expense_type": 'Ticket',
+                        "amount": doc.family_member_ticket_price,
+                        "sanctioned_amount": doc.family_member_ticket_price
+                    })
+                exp_claim.insert(ignore_permissions=True)
+                frappe.db.commit()
+                # update_salary_structure_status(doc.employee)
+                frappe.msgprint("Expense Claim <b><a href='#Form/Expense Claim/{0}'>{0}</a></b> is created".format(exp_claim.name))
+
+                frappe.get_doc({
+                    "doctype":"Additional Salary",
+                    "payroll_date": doc.from_date,
+                    "employee": doc.employee,
+                    "salary_component": 'Additional Deduct',
+                    "amount": get_salary_all(doc.employee, doc.from_date),
+                    "docstatus": 1
+                }).insert(ignore_permissions=True)
+
+
+            elif doc.total_leave_days>=30 and getdate(doc.from_date).day-1!=0:
+                exp_claim = frappe.get_doc({
+                    "doctype":"Expense Claim",
+                   

@@ -1,0 +1,594 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+import frappe
+from frappe import _
+from frappe.utils import  flt
+
+
+def get_zero_vat():
+    poss = frappe.db.sql_list("select name from `tabPOS Closing Voucher` where docstatus=1 ORDER BY name DESC ")
+    for pos in poss:
+        total_zero_vat_amount = 0
+        # if pos=='POS-CLO-2020-00054':
+        print('******  '+str(pos)+'  ******')
+        doc = frappe.get_doc("POS Closing Voucher", pos)
+        for i in range(len(doc.sales_invoices_summary)):
+            invoice_name = doc.sales_invoices_summary[i].invoice
+            invoice_doc = frappe.get_doc("Sales Invoice", invoice_name)
+            for l in range(len(invoice_doc.items)):
+                if invoice_doc.items[l].item_tax_template=='0%':
+                    total_zero_vat_amount = total_zero_vat_amount + invoice_doc.items[l].net_amount
+        
+        print('.*.*-   '+str(total_zero_vat_amount)+'   -*.*.')
+        # ~ doc.total_zero_vat = total_zero_vat_amount
+        # ~ doc.save(ignore_permissions=True)
+        frappe.db.set_value('POS Closing Voucher',doc.name, 'total_zero_vat', total_zero_vat_amount)
+        frappe.db.commit()
+
+
+def remove_defult_warehouse():
+    for item in frappe.get_list('Item'):
+        item = frappe.get_doc('Item', item.name)
+        print(item.name)
+        item.item_defaults = []
+        item.flags.ignore_validate = True
+        item.save()
+        
+
+
+def so_calculate_taxes_and_totals(doc, method):
+    from erpnext.stock.get_item_details import get_item_tax_template
+    for item in doc.get("items"):
+        if not item.item_tax_template:
+            item_code =item.item_code
+            out = {}
+            item_doc = frappe.get_doc("Item", item_code)
+            tax_category = None
+            get_item_tax_template({"tax_category": tax_category}, item_doc, out)
+            frappe.db.set_value('Sales Order Item',item.name, 'item_tax_template', out["item_tax_template"])
+            frappe.db.commit()
+            tc = frappe.get_list("Item Tax Template Detail",{"parent":out["item_tax_template"]})
+            print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            print({"parent":out["item_tax_template"]})
+            print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            if tc:
+                for t in tc:
+                    tax_doc = frappe.get_doc("Item Tax Template Detail",t)
+                    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                    print({tax_doc.tax_type:tax_doc.tax_rate})
+                    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                    frappe.db.set_value('Sales Order Item',item.name, 'item_tax_rate',str({tax_doc.tax_type:tax_doc.tax_rate}))
+                    frappe.db.set_value('Sales Order Item',item.name, 'tax_rate',tax_doc.tax_rate)
+                    frappe.db.set_value('Sales Order Item',item.name, 'tax_amount',item.base_net_amount*tax_doc.tax_rate/100.00)
+
+                
+        
+    doc.calculate_taxes_and_totals()
+    
+
+
+def validate_pos_return(doc, method):
+	if self.is_pos and self.is_return:
+		total_amount_in_payments = 0
+        for payment in self.payments:
+            total_amount_in_payments += payment.amount
+        invoice_total = self.rounded_total or self.grand_total
+        if self.write_off_amount :
+            invoice_total = self.grand_total -self.write_off_amount
+            if total_amount_in_payments < invoice_total:
+                frappe.throw(_("Total payments amount can't be greater than {0} , Total {1}, Write off {2}"\
+                    .format(-self.grand_total--self.write_off_amount,-self.grand_total,-self.write_off_amount)))
+            
+        if total_amount_in_payments < invoice_total:
+            frappe.throw(_("Total payments amount can't be greater than {}".format(-invoice_total)))
+
+def so_calculate_taxes_and_totals_test():
+    from erpnext.stock.get_item_details import get_item_tax_template
+    item_code ="4002064413143"
+    out = {}
+    item = frappe.get_doc("Item", item_code)
+    tax_category = None
+    get_item_tax_template({"tax_category": tax_category}, item, out)
+    
+    print(out)
+    # ~ doc.calculate_taxes_and_totals()
+    
+    
+def validate_write_off_loyality (doc, method):
+    pass
+    # ~ if doc.is_return :
+        # ~ loyalty_amount = frappe.db.get_value('Sales Invoice', {'name': doc.return_against}, 'loyalty_amount')
+        # ~ if loyalty_amount > 0  and not doc.write_off_amount:
+            # ~ doc.write_off_amount = -1*loyalty_amount
+            # ~ doc.calculate_paid_amount()
+            # ~ doc.calculate_taxes_and_totals()
+        
+    
+def validate_max_discount (doc, method):
+    if not doc.is_return :
+        if doc.pos_coupon_code:
+            pricing_rule = frappe.db.get_value('Coupon Code', {'name': doc.pos_coupon_code}, ['pricing_rule'], as_dict=True)
+            if pricing_rule:
+                print("Hit 1")
+                prdoc = frappe.get_doc("Pricing Rule",pricing_rule["pricing_rule"])
+                if not doc.additional_discount_percentage :
+                    doc.additional_discount_percentage = prdoc.discount_percentage
+                
+                if doc.additional_discount_percentage :
+                    if doc.additional_discount_percentage  != prdoc.discount_percentage:
+                        frappe.throw(_("Discount Percentage (% {0} ) not equal to  Cupon (% {1} ) ").format(doc.additional_discount_percentage,prdoc.discount_percentage))
+                
+                doc.calculate_taxes_and_totals()
+                if doc.discount_amount:
+                    if (doc.total*prdoc.discount_percentage / 100.00) != doc.discount_amount : 
+                        frappe.throw(_("Discount Amount ( {0} ) not equal to  Cupon ( {1} ) ").format(doc.discount_amount,(doc.total) ))
+        
+        if not doc.pos_coupon_code and doc.pos_profile   :
+            pos_profile = frappe.get_doc("POS Profile",doc.pos_profile)
+            max=pos_profile.max_discount
+            if doc.additional_discount_percentage:
+                if doc.additional_discount_percentage >max:
+                    frappe.throw(_("Discount is more than the limit allowed (% {0} )").format(max))
+            if pos_profile.max_discount:
+                max=pos_profile.max_discount
+                for item in doc.get("items"):
+                    if item.discount_percentage > max :
+                        frappe.throw(_("Discount is more than the limit allowed (% {1} )for item {0}").format(item.item_name,max))
+            if doc.discount_amount:
+                if (doc.total*max / 100.00) < doc.discount_amount : 
+                    frappe.throw(_("Discount Amount ( {0} ) is more than the limit allowed (% {1} )").format(doc.discount_amount,(doc.total*max / 100.00)) )
+
+def validate_cancel_date(doc,method):
+    from frappe.utils import add_days
+    from datetime import date
+    user = frappe.session.user
+    if add_days(doc.posting_date, 10) < date.today() and not  ("Accounts Manager" in frappe.get_roles(user)):
+        frappe.throw("Can not cancel invoice Older than 10 days")
+
+def validate_rate(doc,method):
+	for item in doc.get("items"):
+		if item.rate <= 0 :
+			frappe.throw(_("Rate is not positive ( {1} )for item {0}").format(item.item_code,item.rate))
+
+def validate_pos_profile (doc, method):
+    if doc.pos_profile and doc.is_pos:
+        pos_profile = frappe.get_doc("POS Profile",doc.pos_profile)
+        users = []
+        for user in pos_profile.get("applicable_for_users"):
+            users.append(user.user)
+        if frappe.session.user not in users :
+            frappe.throw(_("User {0} is not Part of {1} POS profile ,Contact System Administrator.").format(frappe.session.user,doc.pos_profile))
+
+def validate_pos_profile_cost_center (doc, method):
+    if doc.pos_profile and doc.is_pos:
+        pos_profile = frappe.get_doc("POS Profile",doc.pos_profile)
+        if pos_profile.cost_center :
+            for item in doc.get("items"):
+                item.cost_center = pos_profile.cost_center
+
+def validate_return(doc, method):
+    from erpnext.stock.utils import get_stock_balance 
+
+    if doc.is_return and not doc.return_against:
+        for item in doc.get("items"):
+            data = get_stock_balance(item.item_code, item.warehouse, doc.posting_date, doc.posting_time,
+                with_valuation_rate=True, with_serial_no= False )
+            qty, rate = data
+            
+            if rate <= 0 :
+                rate = frappe.db.get_value("Item", item.item_code,'valuation_rate')
+            if rate <= 0 :
+                frappe.throw("Zero Hit "+item.item_code)
+            item.rate = rate
+        doc.calculate_taxes_and_totals()
+
+def validate_sales_person(doc, method):
+    if doc.sales_person and doc.is_pos:
+        sales_person_doc = frappe.get_doc("Sales Person",doc.sales_person )
+        child = frappe.new_doc("Sales Team")
+        child.parent = doc.name
+        child.parenttype = "Sales Invoice"
+        child.sales_person = doc.sales_person
+        child.allocated_percentage = 100.00
+        child.commission_rate = flt(sales_person_doc.commission_rate,2)
+        child.allocated_amount = flt(doc.base_net_total * child.allocated_percentage / 100.0,2)
+        child.incentives = flt(child.allocated_amount * child.commission_rate / 100.0,2)
+        doc.sales_team.append(child)
+
+        
+            
+            
+def validate_qty (doc, method):
+    for item in doc.get("items"):
+        item.qty = float(item.qty)  
+            
+
+
+def assign_item_supplier():
+    item_list = frappe.get_list ("Item")
+    for item in item_list :
+        doc=frappe.get_doc("Item",item)
+        print (doc.name)
+        if doc.supplier_old_system_id :
+            supplier =frappe.get_doc("Supplier",{"old_system_id":doc.supplier_old_system_id})
+            doc.supplier_items = []
+            doc.flags.ignore_validate = True
+            child =doc.append("supplier_items",{})
+            child.supplier = supplier.name
+            doc.save()
+            frappe.db.commit()
+
+
+
+def read_excel():
+    import io
+    from frappe.utils.xlsxutils import (
+        read_xlsx_file_from_attached_file,
+        read_xls_file_from_attached_file,)
+    file_path = "/home/frappe/frappe-bench/data/a.xlsx"
+    extn = file_path.split(".")[1]
+    file_content = None
+    with io.open(file_path, mode="rb") as f:
+        file_content = f.read()
+    data = read_xlsx_file_from_attached_file(fcontent=file_content)
+    for d in data:
+        try: doc = frappe.get_doc("Item",d[0])
+        except:print(d[0])
+
+
+def add_items():
+    from frappe.utils.csvutils import read_csv_content
+    from frappe.core.doctype.data_import.importer import upload
+    with open("/home/frappe/frappe-bench/apps/customizer/customizer/المعارض/main_warehouse1.csv", "r") as infile:
+        rows = read_csv_content(infile.read())
+        items =[]
+        i = 0
+        for index, row in enumerate(rows):
+            frappe.db.commit()
+            # print (row[0])
+            if row[0] and int(row[2]) >= 0 :
+                if frappe.db.exists("Item", {"name": row[0]}):
+                    doc_item = frappe.get_doc("Item", row[0])
+                    items_row = {"doctype": "Stock Reconciliation Item","item_code":row[0],"warehouse": "عيادة لاتيرا - P","qty": row[2],"valuation_rate": doc_item.valuation_rate}
+                    items.append(items_row)
+                else:
+                    print("Item Not Found "+row[0])
+        # ss_doc = frappe.get_doc({
+        # "doctype":"Stock Reconciliation",
+        # "purpose":"Opening Stock",
+        # "posting_date":"2020-04-01",
+        # "items":items,
+        # "expense_account":"1910 - افتتاحي مؤقت - P"
+        # })
+        # # ss_doc.flags.ignore_validate = True
+        # ss_doc.flags.ignore_permissions = True
+        # ss_doc.insert()
+
+
+        print ('*************')
+
+def remove_dupplicate_entry():
+    import pandas as pd
+    df = pd.read_csv('/home/frappe/frappe-bench/apps/customizer/customizer/العيادات/latira_old.csv', dtype={'code':str})
+    df1 = df.groupby(['code'])['qty'].agg(['sum'])
+    # df1 = df.groupby(['code','name'])['qty'].sum()
+    print(df1)
+    df2 = pd.DataFrame()
+    cols = ['code']
+    for col in cols:
+        df2[col] = list(df1['sum'].index.get_level_values(col))
+    df2['qty'] = df1['sum'].values
+    # df2['code']= df['code'].astype('str')
+    df2.to_csv('/home/frappe/frappe-bench/apps/customizer/customizer/latira_new.csv',index = False)
+
+
+def upload_chart_of_accounts():
+    from frappe.utils.csvutils import read_csv_content
+    path = frappe.get_app_path("customizer")
+    path += "/csv/coa.csv"
+    with open(path, "r") as infile:
+        rows = read_csv_content(infile.read())
+        for index, row in enumerate(rows):
+            # print(row[3])
+            if not frappe.db.exists("Account", row[0]+" - "+ " - P"):
+                acc = frappe.new_doc("Account")
+                acc.account_name = row[1]
+                acc.parent_account = frappe.get_value("Account", {"account_number": row[4]}, "name")
+                acc.account_number = row[0]
+                acc.is_group = 1 if row[2] == "0" else 0
+                acc.company = "Pets-Oasis"
+                # acc.root_type = row[4]
+                # acc.root_type = row[5]
+                acc.insert()
+                # frappe.db.commit()
+                print(row[0])
+
+
+
+def read_excel_account():
+    import io
+    from datetime import datetime
+
+    from frappe.utils.xlsxutils import (
+        read_xlsx_file_from_attached_file,
+        read_xls_file_from_attached_file,)
+    file_path = "/home/frappe/frappe-bench/data/b.xlsx"
+    extn = file_path.split(".")[1]
+    file_content = None
+    with io.open(file_path, mode="rb") as f:
+        file_content = f.read()
+    data = read_xlsx_file_from_attached_file(fcontent=file_content)
+    master_name = ""
+    # ~ for d in data:
+        # ~ if master_name == "":
+            # ~ master_name = d[3]
+        # ~ try : 
+
+            # ~ if not frappe.db.get_value("Old JV Data", {"journal_dtl_code": d[0]}, 'name'):
+                # ~ jv_data = frappe.new_doc("Old JV Data")
+                # ~ jv_data.journal_dtl_code = str(d[0])
+                # ~ print("add "+str(d[1]))
+                # ~ jv_data.journal_dtl_date =str( datetime.strptime(str(d[1])[:19], '%Y-%m-%d %H:%M:%S'))
+                # ~ jv_data.journal_dtl_date = str(d[1])
+                # ~ jv_data.journal_mstr_year =str( d[2])
+                # ~ jv_data.journal_mstr_code = str(d[3])
+                # ~ jv_data.account_code = str(d[4])
+                # ~ jv_data.journal_dtl_desc = d[5]
+                # ~ jv_data.journal_debit = flt(d[6])
+                # ~ jv_data.journal_credit = flt(d[7])
+                # ~ jv_data.created_on =str( datetime.strptime(str(d[9])[:19], '%Y-%m-%d %H:%M:%S'))
+                # ~ jv_data.save()
+                # ~ print("add "+str(d[0]))
+            # ~ else:
+                # ~ print("hit "+str(d[0]))
+
+        # ~ except Exception as e: 
+            # ~ print("error")
+            # ~ print(e)
+            # ~ print(d[4])
+            # ~ print("\r")
+            
+    years =["2011","2012","2013","2014","2015","2016","2017","2018","2019","2020"]
+    
+    for year in years:
+    
+        all_old_jv = frappe.db.sql("""select distinct journal_mstr_code from `tabOld JV Data` where journal_mstr_year ={0} """.format(year))
+        # ~ all_old_jv = [("474")]
+        for d  in all_old_jv:
+            # ~ print ("this")
+            # ~ print (d[0])
+            old_list = frappe.get_list("Old JV Data",{"journal_mstr_code":d[0],"journal_mstr_year":year} )
+            
+            
+            je = frappe.new_doc("Journal Entry")
+            je.is_opening = "No"
+            je.voucher_type = "Journal Entry"
+            je.company = "Pets-Oasis"
+            je.old_jv = d[0]
+            
+            try:
+                if old_list:
+                    for a in old_list:
+                        doc = frappe.get_doc("Old JV Data",{"name":a["name"]})
+                        if not je.posting_date : 
+                             je.posting_date = doc.journal_dtl_date.date()
+                        account = frappe.get_value("Account", {"account_number": str('{:,}'.format(int(doc.account_code)))}, "name")
+                        # ~ print(doc.journal_dtl_date.date())
+                        if not account:
+                            print ("Bad Account")
+                            print (doc.account_code)
+                        # ~ print(str('{:,}'.format(int(doc.account_code))))
+                        # ~ print(account)
+                        # ~ print(account)
+                        # ~ print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+                        if account:
+                            je.append("accounts", 
+                                {"account": account,
+                                "credit_in_account_currency": doc.journal_credit,
+                                "credit": doc.journal_credit,
+                                "debit_in_account_currency": doc.journal_debit,
+                                "debit": doc.journal_debit,
+                                "user_remark": (doc.journal_dtl_desc),
+                                })
+                
+                # ~ for acc in je.get("accounts"):
+                    # ~ print(acc.credit_in_account_currency)
+                    # ~ print("\r")
+                # ~ print("Debits")
+                # ~ for acc in je.get("accounts"):
+                    # ~ print(acc.debit_in_account_currency)
+                    # ~ print("\r")
+                je.save()
+                print("hit "+str(d[0]))
+                print(je.name)
+                print("\r")
+                frappe.db.commit()
+
+            except Exception as e: 
+                print("error")
+                print(a)
+                print("\r")
+                print("\r")
+                # ~ print("\r")
+
+
+def read_excel_item_batch():
+    import io
+    from datetime import datetime
+
+    from frappe.utils.xlsxutils import (
+        read_xlsx_file_from_attached_file,
+        read_xls_file_from_attached_file,)
+    file_path = "/home/frappe/frappe-bench/data/i1.xlsx"
+    extn = file_path.split(".")[1]
+    file_content = None
+    with io.open(file_path, mode="rb") as f:
+        file_content = f.read()
+    data = read_xlsx_file_from_attached_file(fcontent=file_content)
+    i =0
+    for d in data:
+        name =""
+        try :
+            name =""
+            item_name =None
+            try:
+                name = str(int(d[0]))
+                item_name = frappe.db.get_value("Item", {"name": name}, "name")
+            except Exception as e: 
+                name = str(d[0])
+                item_name = frappe.db.get_value("Item", {"name": name}, "name")
+                
+                
+            if item_name:
+                frappe.db.sql("update `tabItem` set has_batch_no=1 where name='{0}'".format(name))
+                frappe.db.commit()
+                
+                #check for default batch 
+                batch_list = frappe.db.get_list("Batch",{'name':name+"-batch"})
+                if not batch_list:
+                    batch = frappe.new_doc("Batch")
+                    batch.batch_id = name+"-batch"
+                    batch.item = name
+                    batch.save()
+                
+                frappe.db.sql("update `tabStock Ledger Entry` set batch_no='{0}' where item_code='{1}'".format(name+"-batch",name))
+                frappe.db.commit()  
+            else :
+                temp = "0"+name
+                item_name = frappe.db.get_value("Item", {"name": temp}, "name")
+                if item_name:
+                    frappe.db.sql("update `tabItem` set has_batch_no=1 where name='{0}'".format(temp))
+                    frappe.db.commit()
+                    
+                    #check for default batch 
+                    batch_list = frappe.db.get_list("Batch",{'name':temp+"-batch"})
+                    if not batch_list:
+                        batch = frappe.new_doc("Batch")
+                        batch.batch_id = temp+"-batch"
+                        batch.item = temp
+                        batch.save()
+                    
+                    frappe.db.sql("update `tabStock Ledger Entry` set batch_no='{0}' where item_code='{1}'".format(temp+"-batch",temp))
+                    frappe.db.commit() 
+                else :
+                    i+=1
+                    print (name)
+
+        except Exception as e: 
+            print("error")
+            print(e)
+            i+=1
+            print(name)
+    print("Bad Items : "+str(i))
+        # ~ item_name = frappe.get_value("Item", {"name": d[0]}, "name")
+        # ~ if item_name:
+            # ~ print("hit1")
+            # ~ frappe.db.sql("update `tabItem` set has_batch_no=1 where name='{0}'".format(name))
+            # ~ frappe.db.commit()
+            
+            # ~ #check for default batch 
+            # ~ batch_list = frappe.db.get_list("Batch",{'name':name+"-batch"})
+            # ~ if not batch_list:
+                # ~ batch = frappe.new_doc("Batch")
+                # ~ batch.batch_id = name+"-batch"
+                # ~ batch.item = name
+                # ~ batch.save()
+            
+            # ~ frappe.db.sql("update `tabStock Ledger Entry` set batch_no='{0}' where item_code='{1}'".format(name+"-batch",name))
+            # ~ frappe.db.commit()  
+        # ~ else :
+            # ~ print("hit2")
+            # ~ print (str(d[0]))
+
+def djvs():
+    i=0
+    for item in frappe.get_list('Journal Entry'):
+        item = frappe.get_doc('Journal Entry', item.name)
+        i+=1
+        print (i)
+        print(" - "+item.name)
+        item.delete()
+        print("delet")
+        
+def submjvs():
+    i=0
+    for item in frappe.get_list('Journal Entry',{'docstatus':0}):
+        item = frappe.get_doc('Journal Entry', item.name)
+        if item.docstatus != 1:
+            i+=1
+            print (i)
+            print(" - "+item.name)
+            item.submit()
+            print("submit")
+            frappe.db.commit()
+
+
+def edit_is_batch_to_not():
+    # ~ doc = frappe.get_doc("Item", name)
+    # ~ doc.has_batch_no = 1
+    # ~ doc.save()
+    frappe.db.sql("update `tabItem` set has_batch_no=0 where name in ('701029101777','5400274730132')")
+    frappe.db.commit()
+    
+    frappe.db.sql("update `tabStock Ledger Entry` set batch_no='' where item_code in ('701029101777','5400274730132')")
+    frappe.db.commit()    
+    
+        
+    
+    return 'True'
+
+def update_account_number():
+    from erpnext.accounts.doctype.account.account import update_account_number
+    account_list = frappe.get_list("Account")
+    for account in account_list :
+        doc = frappe.get_doc("Account",account)
+        if doc.account_number:
+            print(doc.account_number.replace(',','') )
+            update_account_number(doc.name, doc.account_name, doc.account_number.replace(',','') )
+            
+def rebicate_price_list():
+    import copy
+    for price in frappe.get_list('Item Price',{'price_list':"White Friday"}):
+        item= frappe.get_doc("Item Price",price)
+        item.delete()
+        frappe.db.commit()
+    i = 1
+    for price in frappe.get_list('Item Price',{'price_list':"Standard Selling"}):
+        item= frappe.get_doc("Item Price",price)
+        i+=1
+
+        try :
+            new_item = copy.deepcopy(item)
+            new_item.name = ""
+            new_item.price_list = "White Friday"
+            new_item.save()
+            frappe.db.commit()
+            print(i)
+            print(item.name)
+        except Exception as e: 
+            print("error")
+            print(e)
+
+
+        
+def add_quantity_differance_in_stock_entry():
+    se_list = frappe.get_list("Stock Ledger Entry",filters={'voucher_type':"Stock Reconciliation"})
+    i = len(se_list)
+    for se in se_list :
+        print(len(se_list))
+        print(i)
+        i-=1
+        
+        print(se["name"])
+        doc = frappe.get_doc("Stock Ledger Entry",se["name"])
+        quantity_difference = flt(frappe.db.get_value("Stock Reconciliation Item",doc.voucher_detail_no,"quantity_difference"))
+        item = flt(frappe.db.get_value("Stock Reconciliation Item",doc.voucher_detail_no,"item_code"))
+        print(item)
+        print(quantity_difference)
+        frappe.db.set_value('Stock Ledger Entry',doc.name, 'quantity_difference', quantity_difference)
+       
+        frappe.db.commit()

@@ -1,0 +1,82 @@
+{
+ "add_total_row": 1,
+ "creation": "2024-05-01 11:49:32.860691",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "\u0634\u0631\u0643\u0629 \u0648\u0627\u062d\u0629 \u0627\u0644\u062d\u064a\u0648\u0627\u0646 \u0644\u0644\u062a\u062c\u0627\u0631\u0629",
+ "modified": "2024-05-01 11:49:32.860691",
+ "modified_by": "Administrator",
+ "module": "Customizer",
+ "name": "Sales Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Sales Invoice",
+ "report_name": "Sales Report",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Casher"
+  },
+  {
+   "role": "Sales Representative"
+  },
+  {
+   "role": "Veterinary doctor"
+  },
+  {
+   "role": "Jihad technical support"
+  },
+  {
+   "role": "Wholesale representative"
+  },
+  {
+   "role": "E-commerce purchase role"
+  },
+  {
+   "role": "Mohammd Kher"
+  },
+  {
+   "role": "Warehouse supervisor"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "Acc. Reader"
+  },
+  {
+   "role": "Branch Manager"
+  },
+  {
+   "role": "osama marketing"
+  },
+  {
+   "role": "Full access"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Pets Healthcare Casher"
+  },
+  {
+   "role": "Healthcare  Practitioner"
+  },
+  {
+   "role": "LabTest Approver"
+  },
+  {
+   "role": "Cancel Supervisor"
+  }
+ ]
+}

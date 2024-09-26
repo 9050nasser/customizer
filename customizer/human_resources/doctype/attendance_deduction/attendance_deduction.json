@@ -1,0 +1,287 @@
+{
+ "allow_import": 1,
+ "autoname": "AD.######",
+ "creation": "2020-02-19 10:53:59.432622",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee_info_section",
+  "employee",
+  "department",
+  "column_break_4",
+  "employee_name",
+  "company",
+  "deduction_section",
+  "type",
+  "column_break_9",
+  "check_basic_salary",
+  "check_housing",
+  "check_transportation",
+  "column_break_13",
+  "check_cola",
+  "check_gosi",
+  "deduction_details_section",
+  "salary_component",
+  "ed_type",
+  "amount",
+  "hours",
+  "days",
+  "main_salary_component",
+  "multiple",
+  "calculated_amount",
+  "additional_salary",
+  "reason",
+  "column_break_5",
+  "working_days",
+  "payroll_date",
+  "salary_slip",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee_info_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Info"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "deduction_section",
+   "fieldtype": "Section Break",
+   "label": "Deduction"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "\nAttendance\nPenalty",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "check_basic_salary",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Basic Salary"
+  },
+  {
+   "default": "1",
+   "fieldname": "check_housing",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Housing"
+  },
+  {
+   "default": "1",
+   "fieldname": "check_transportation",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Transportation"
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "check_cola",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Cola"
+  },
+  {
+   "default": "1",
+   "fieldname": "check_gosi",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Gosi"
+  },
+  {
+   "fieldname": "deduction_details_section",
+   "fieldtype": "Section Break",
+   "label": "Deduction Details"
+  },
+  {
+   "fieldname": "salary_component",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Additional Salary Component",
+   "options": "Salary Component"
+  },
+  {
+   "fieldname": "ed_type",
+   "fieldtype": "Select",
+   "label": "Deduction Type",
+   "options": "Amount\nDays\nHours",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.ed_type == \"Amount\"",
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount"
+  },
+  {
+   "depends_on": "eval:doc.ed_type == \"Hours\"",
+   "fieldname": "hours",
+   "fieldtype": "Float",
+   "label": "Hours"
+  },
+  {
+   "depends_on": "eval:doc.ed_type == \"Days\"",
+   "fieldname": "days",
+   "fieldtype": "Float",
+   "label": "Days"
+  },
+  {
+   "depends_on": "eval:doc.ed_type == \"Salary Component\"",
+   "fieldname": "main_salary_component",
+   "fieldtype": "Link",
+   "label": "Main Salary Component",
+   "options": "Salary Component"
+  },
+  {
+   "default": "1",
+   "depends_on": "eval:doc.ed_type == \"Salary Component\"",
+   "fieldname": "multiple",
+   "fieldtype": "Float",
+   "label": "Multiple"
+  },
+  {
+   "fieldname": "calculated_amount",
+   "fieldtype": "Currency",
+   "label": "Calculated Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "additional_salary",
+   "fieldtype": "Link",
+   "label": "Additional Salary",
+   "options": "Additional Salary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "working_days",
+   "fieldtype": "Float",
+   "label": "Working Days",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payroll_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Payroll Date",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "salary_slip",
+   "fieldtype": "Link",
+   "label": "Salary Slip",
+   "options": "Salary Slip",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Attendance Deduction",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "modified": "2020-06-30 12:38:08.387951",
+ "modified_by": "admin@example.com",
+ "module": "Human Resources",
+ "name": "Attendance Deduction",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "employee",
+ "track_changes": 1
+}
