@@ -1,0 +1,54 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-06-26 11:53:30.840930",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "mode_of_payment",
+  "collected_amount",
+  "expected_amount",
+  "difference"
+ ],
+ "fields": [
+  {
+   "fieldname": "mode_of_payment",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Mode of Payment",
+   "options": "Mode of Payment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "collected_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Collected Amount",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "expected_amount",
+   "fieldtype": "Currency",
+   "label": "Expected Amount"
+  },
+  {
+   "fieldname": "difference",
+   "fieldtype": "Currency",
+   "label": "Difference"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-06-26 12:08:52.046740",
+ "modified_by": "Administrator",
+ "module": "Customizer",
+ "name": "POS Closing Voucher Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

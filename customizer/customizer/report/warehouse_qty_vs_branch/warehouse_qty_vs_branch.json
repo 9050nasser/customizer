@@ -1,0 +1,42 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2024-08-12 12:28:40.090741",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "\u0634\u0631\u0643\u0629 \u0648\u0627\u062d\u0629 \u0627\u0644\u062d\u064a\u0648\u0627\u0646 \u0644\u0644\u062a\u062c\u0627\u0631\u0629",
+ "letterhead": null,
+ "modified": "2024-08-12 12:28:40.090741",
+ "modified_by": "Administrator",
+ "module": "Customizer",
+ "name": "Warehouse Qty VS Branch",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Bin",
+ "report_name": "Warehouse Qty VS Branch",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Purchase User"
+  },
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Purchase Manager"
+  },
+  {
+   "role": "Sales Manager"
+  }
+ ]
+}

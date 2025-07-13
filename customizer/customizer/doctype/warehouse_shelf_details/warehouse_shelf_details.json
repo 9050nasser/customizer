@@ -1,0 +1,39 @@
+{
+ "creation": "2021-04-06 09:36:54.481988",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "warehouse",
+  "warehouse_shelf"
+ ],
+ "fields": [
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "warehouse_shelf",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Warehouse Shelf",
+   "options": "Warehouse Shelf",
+   "reqd": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-04-06 09:49:32.425240",
+ "modified_by": "Administrator",
+ "module": "Customizer",
+ "name": "Warehouse Shelf Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

@@ -1,0 +1,51 @@
+{
+ "creation": "2023-06-21 10:55:40.591993",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "posting_date",
+  "item_code",
+  "total_qty",
+  "ref_invoice"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "total_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total Qty"
+  },
+  {
+   "fieldname": "ref_invoice",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Reference Inv.",
+   "options": "Sales Invoice"
+  }
+ ],
+ "istable": 1,
+ "modified": "2023-06-21 10:56:23.548505",
+ "modified_by": "Administrator",
+ "module": "Customizer",
+ "name": "Free Customer Items",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

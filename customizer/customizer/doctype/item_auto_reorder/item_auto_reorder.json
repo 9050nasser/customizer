@@ -1,0 +1,62 @@
+{
+ "creation": "2023-05-11 09:39:48.395812",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "warehouse_group",
+  "warehouse",
+  "warehouse_reorder_level",
+  "warehouse_reorder_qty",
+  "material_request_type"
+ ],
+ "fields": [
+  {
+   "fieldname": "warehouse_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Check in (group)",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Request for",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "warehouse_reorder_level",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Re-order Level",
+   "reqd": 1
+  },
+  {
+   "fieldname": "warehouse_reorder_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Re-order Qty"
+  },
+  {
+   "fieldname": "material_request_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Material Request Type",
+   "options": "Purchase\nTransfer\nMaterial Issue\nManufacture",
+   "reqd": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2023-05-11 09:40:18.477275",
+ "modified_by": "Administrator",
+ "module": "Customizer",
+ "name": "Item Auto Reorder",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

@@ -1,0 +1,235 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "BT-.#####",
+ "creation": "2024-10-06 17:09:36.537939",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_jc3c",
+  "employee",
+  "employee_name",
+  "designation",
+  "department",
+  "date_of_joining",
+  "column_break_0j8t",
+  "posting_date",
+  "trip_reason",
+  "section_break_xiig",
+  "from_date",
+  "to_date",
+  "days",
+  "section_break_joia",
+  "assignment_type",
+  "internal_per_diem_rate",
+  "external_per_diem_rate",
+  "country",
+  "city",
+  "target_city",
+  "column_break_iwat",
+  "ticket_cost",
+  "cost_total",
+  "attachments_section",
+  "attachments",
+  "details_section",
+  "details",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_jc3c",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Business Trip",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.date_of_joining",
+   "fieldname": "date_of_joining",
+   "fieldtype": "Date",
+   "label": "Date of Joining",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_0j8t",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "trip_reason",
+   "fieldtype": "Text",
+   "in_list_view": 1,
+   "label": "Trip Reason",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_xiig",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "From Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "To Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "days",
+   "fieldtype": "Data",
+   "label": "Days"
+  },
+  {
+   "fieldname": "section_break_joia",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "assignment_type",
+   "fieldtype": "Select",
+   "label": "Assignment Type",
+   "options": "\nInternal\nExternal"
+  },
+  {
+   "depends_on": "eval:doc.assignment_type == \"Internal\"\n",
+   "fieldname": "internal_per_diem_rate",
+   "fieldtype": "Currency",
+   "label": "Internal Per Diem Rate"
+  },
+  {
+   "depends_on": "eval:doc.assignment_type == \"External\"\n",
+   "fieldname": "external_per_diem_rate",
+   "fieldtype": "Currency",
+   "label": "External Per Diem Rate"
+  },
+  {
+   "depends_on": "eval:doc.assignment_type == \"External\"\n",
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Link",
+   "label": "City",
+   "options": "Country"
+  },
+  {
+   "fieldname": "target_city",
+   "fieldtype": "Data",
+   "label": "Target City"
+  },
+  {
+   "fieldname": "column_break_iwat",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ticket_cost",
+   "fieldtype": "Float",
+   "label": "Ticket Cost"
+  },
+  {
+   "fieldname": "cost_total",
+   "fieldtype": "Currency",
+   "label": "Cost Total"
+  },
+  {
+   "fieldname": "attachments_section",
+   "fieldtype": "Section Break",
+   "label": "Attachments"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "Table",
+   "label": "Attachments",
+   "options": "Attachments"
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "details",
+   "fieldtype": "Text Editor",
+   "label": "Details"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-10-27 10:05:59.433431",
+ "modified_by": "Administrator",
+ "module": "Employee Self Service",
+ "name": "Business Trip",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

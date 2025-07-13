@@ -1,0 +1,265 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "DR-.#####",
+ "creation": "2024-12-01 09:31:01.409184",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_xd7r",
+  "posting_date",
+  "company",
+  "branch_type",
+  "column_break_iiis",
+  "working_days",
+  "section_break_wtay",
+  "employee",
+  "employee_name",
+  "department",
+  "column_break_do0z",
+  "branch",
+  "deduction_timesheet_section",
+  "deduction_timesheet",
+  "section_break_9zdz",
+  "total_working_currency",
+  "column_break_iraa",
+  "reason_section",
+  "note",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_xd7r",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Deduction Request",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "branch_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Branch Type",
+   "options": "\nStore\nClinc\nWhaerhoue",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_iiis",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "working_days",
+   "fieldtype": "Data",
+   "label": "Working Days",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_wtay",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "link_filters": "[[\"Employee\",\"status\",\"=\",\"Active\"]]",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_do0z",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.branch",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_9zdz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_iraa",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reason_section",
+   "fieldtype": "Section Break",
+   "label": "Reason"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Deduction Request",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "deduction_timesheet_section",
+   "fieldtype": "Section Break",
+   "label": "Deduction Timesheet"
+  },
+  {
+   "fieldname": "deduction_timesheet",
+   "fieldtype": "Table",
+   "label": "Deduction Timesheet",
+   "options": "Deduction Timesheet"
+  },
+  {
+   "fieldname": "total_working_currency",
+   "fieldtype": "Data",
+   "label": "Total Working Currency",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-01-25 17:14:51.095736",
+ "modified_by": "Administrator",
+ "module": "Employee Self Service",
+ "name": "Deduction Request",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Branch Manager",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee Service",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Ayman Approval",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Qassem Approval",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Mohammd Kher",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,306 @@
+{% extends "templates/web.html" %}
+{%- block head_include %}
+{% endblock -%}
+{%- block banner -%}
+{%- endblock -%}
+{%- block navbar -%}
+{%- endblock -%}
+{%- block style %}{%- endblock -%}
+{%- block footer -%}
+{%- endblock -%}
+
+
+{%- block head -%}
+<link rel="icon" type="image/png" sizes="56x56" href="assets/landing_page/images/fav-icon/icon.png">
+<!-- Main style sheet -->
+<link rel="stylesheet" type="text/css" href="assets/landing_page/css/bootstrap-rtl.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/landing_page/css/style-rtl.css">
+    <link rel="stylesheet" type="text/css" href="assets/landing_page/fonts/stylesheet.css">
+
+<!-- responsive style sheet -->
+<link rel="stylesheet" type="text/css" href="assets/landing_page/css/responsive.css">
+<link rel="stylesheet" type="text/css" href="assets/landing_page/css/Steps.css">
+<link rel="stylesheet" type="text/css" href="assets/landing_page/css/Cadrs.CSS">
+
+
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/guillaumepotier/Parsley.js@2.9.2/bower_components/bootstrap/dist/css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/guillaumepotier/Parsley.js@2.9.2/doc/assets/docs.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/guillaumepotier/Parsley.js@2.9.2/src/parsley.css">
+
+
+
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="assets/landing_page/js/jquery.strengthify.js"></script>
+    <link rel="stylesheet" href="assets/landing_page/css/strengthify.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.0/sweetalert.min.css">
+
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/guillaumepotier/Parsley.js@2.9.2/dist/parsley.js"></script>
+
+
+
+
+<style>
+    .progress-bar {
+    background-color: #ED8718!important;
+}
+
+.strengthify-wrapper {
+    margin-top: -25px!important;
+    margin-bottom: 25px!important;
+    }
+
+    .main-page-wrapper {
+    overflow: hidden!important;
+}
+
+.invalid {
+  background-color: #ffdddd!important;
+}
+
+.invalid_agreement{
+    color: #fc7b7b!important;
+}
+
+
+#msform select {
+    padding: 8px 15px 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 25px;
+    margin-top: 2px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: montserrat;
+    color: #2C3E50;
+    background-color: #ECEFF1;
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+
+
+.signUp-page .shape-wrapper span:nth-child(1) {
+  background: #f3b274;
+  top:0;
+  left:20%;
+  animation: scale-upOne 3.9s alternate infinite ease-in;
+}
+.signUp-page .shape-wrapper span:nth-child(2) {
+  background: #9e7bae;
+  top:0%;
+  right:7%;
+  animation: scale-upOne 6s alternate infinite ease-in;
+}
+.signUp-page .shape-wrapper span:nth-child(3) {
+  background: #3a3242;
+  top:48%;
+  right:62%;
+  margin-right: -13px;
+  animation: scale-upOne 5s alternate infinite ease-in;
+}
+.signUp-page.signUp-minimal .shape-wrapper span:nth-child(3) {right: 88%;}
+.signUp-page .shape-wrapper span:nth-child(4) {
+  background: #ffb3b3;
+  bottom:1%;
+  right:25%;
+  animation: scale-upOne 4s alternate infinite ease-in;
+}
+.signUp-page .shape-wrapper span:nth-child(5) {
+  background: #ffe281;
+  bottom: 0%;
+  left:5%;
+  animation: scale-upOne 5s alternate infinite ease-in;
+}
+
+
+.signUp-page {
+    min-height: auto;
+}
+
+.signUp-page .shape-wrapper{
+    top: auto
+}
+
+
+#msform .form-card{
+    z-index: -1;
+}
+
+
+.swal-modal div{
+    transform: translate3d(0,0,0) !important;
+}
+
+.swal-modal .swal-footer{
+        text-align: center!important;
+}
+
+
+
+.fieldlabels{
+    text-align: right!important;
+}
+
+.form-card{
+    text-align: right!important;
+}
+
+#start_free_trial{
+        text-align: center!important;
+}
+
+
+.swal-button--confirm{
+    background-color: #ED892F!important;
+}
+
+#msform .action-button{
+    width: 145px!important;
+    font-size: 12px;
+}
+
+#phno_error_message,#phno2_error_message,#coupon_error_message,#payment_error_message,#url_error_message,#email_error_message,
+#username_error_message{
+    text-align: right!important;
+}
+
+.hint_fields{
+    color: #B94A48;
+    font-size: 0.9em;
+    line-height: 0.9em;
+}
+
+
+.invoice_table td,.invoice_table th{
+    text-align: center;
+    width: 50%;
+}
+
+
+
+</style>
+
+{%- endblock -%}
+{% block title %}فاتورة ضريبية مبسطة{% endblock %}
+{% block content %}
+
+    <div class="signUp-page signUp-standard">
+        <div class="shape-wrapper">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div> <!-- /.shape-wrapper -->
+        <div class="signUp-illustration"><img src="assets/landing_page/images/home/sign-up.svg" alt=""></div>
+        <div class="shop-details">
+            <div class="container">
+                <div class="procuct-details">
+                    <div class="row">
+                        <div class="col-md-5 col-xs-12">
+                        </div>
+                        <div class="col-md-7 col-xs-12 text-center">
+                            
+                            <div class="row">
+                                <div class="col-12">
+                                    <h2 class="fs-title text-center">فاتورة ضريبية مبسطة</h2>
+                                    <h4 class="text-center returned_invoice" style="color: red;"></h4>
+                                </div>
+                            </div>
+
+                            <br>
+                            <br>
+
+                        <table class='table table-striped invoice_table' style="width:100%;">
+                                <tr>
+                                    <th> رقم الفاتورة</th>
+                                    <td class="sales_invoice_id"></td>
+                                </tr>
+<!--
+                                <tr>
+                                    <th> الفاتورة</th>
+                                    <td class="invoice"></td>
+                                </tr>
+-->
+                                <tr>
+                                    <th>اسم الشركة</th>
+                                    <td class="company"></td>
+                                </tr>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <td class="date"></td>
+                                </tr>
+                                <tr>
+                                    <th>الوقت</th>
+                                    <td class="time"></td>
+                                </tr>
+                                <tr>
+                                    <th>الرقم الضريبي</th>
+                                    <td class="tax_id"></td>
+                                </tr>
+                                <tr>
+                                    <th>قيمة البضاعة بدون ضريبة</th>
+                                    <td class="amount_without_tax"></td>
+                                </tr>
+                                <tr>
+                                    <th>الضريبة</th>
+                                    <td class="tax_amount"></td>
+                                </tr>
+                                <tr>
+                                    <th>المبلغ الكلي</th>
+                                    <td class="total_amount"></td>
+                                </tr>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+    <!-- Optional JavaScript _____________________________  -->
+    <script src="assets/landing_page/vendor/jquery.2.2.3.min.js"></script>
+    <!-- Popper js -->
+    <script src="assets/landing_page/vendor/popper.js/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="assets/landing_page/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- menu  -->
+    <script src="assets/landing_page/vendor/mega-menu/assets/js/custom.js"></script>
+    <!-- AOS js -->
+    <script src="assets/landing_page/vendor/aos-next/dist/aos.js"></script>
+    <!-- WOW js -->
+    <script src="assets/landing_page/vendor/WOW-master/dist/wow.min.js"></script>
+    <!-- owl.carousel -->
+    <script src="assets/landing_page/vendor/owl-carousel/owl.carousel.min.js"></script>
+    <!-- js count to -->
+    <script src="assets/landing_page/vendor/jquery.appear.js"></script>
+    <script src="assets/landing_page/vendor/jquery.countTo.js"></script>
+    <!-- Fancybox -->
+    <script src="assets/landing_page/vendor/fancybox/dist/jquery.fancybox.min.js"></script>
+    <script src="assets/landing_page/vendor/selectize.js/selectize.min.js"></script>
+    <!-- Language js -->
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <!-- Theme js -->
+    <script src="assets/landing_page/js/lang.js"></script>
+    <!-- Theme js -->
+    <script src="assets/landing_page/js/theme.js"></script>
+
+    <!--<script src="assets/landing_page/js/steps.js"></script>-->
+</div> <!-- /.main-page-wrapper -->
+</div> <!-- /.main-page-wrapper -->
+{% endblock %}
+
+

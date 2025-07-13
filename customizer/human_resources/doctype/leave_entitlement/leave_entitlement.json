@@ -1,0 +1,176 @@
+{
+ "autoname": "LE.#####",
+ "creation": "2020-06-25 13:08:48.280820",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "leave_application",
+  "employee",
+  "employee_english_name",
+  "employee_arabic_name",
+  "column_break_4",
+  "from_date",
+  "to_date",
+  "total_leave_days",
+  "department",
+  "branch",
+  "entitlements_section",
+  "employee_ticket_price",
+  "family_member_ticket_price",
+  "column_break_13",
+  "month_salary",
+  "current_month_working_days"
+ ],
+ "fields": [
+  {
+   "fieldname": "leave_application",
+   "fieldtype": "Link",
+   "label": "Leave Application",
+   "options": "Leave Application"
+  },
+  {
+   "fetch_from": "leave_application.employee",
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_english_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee English Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_arabic_name",
+   "fieldtype": "Data",
+   "label": "Employee Arabic Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "leave_application.from_date",
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "From Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "leave_application.to_date",
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "To Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "leave_application.total_leave_days",
+   "fieldname": "total_leave_days",
+   "fieldtype": "Float",
+   "label": "Total Leave Days",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "label": "Department",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.branch",
+   "fieldname": "branch",
+   "fieldtype": "Data",
+   "label": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "entitlements_section",
+   "fieldtype": "Section Break",
+   "label": "Entitlements"
+  },
+  {
+   "fetch_from": "leave_application.employee_ticket_price",
+   "fieldname": "employee_ticket_price",
+   "fieldtype": "Read Only",
+   "label": "Employee Ticket Price"
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "month_salary",
+   "fieldtype": "Currency",
+   "label": "Month Salary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "current_month_working_days",
+   "fieldtype": "Currency",
+   "label": "Current Month Working Days",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "leave_application.family_member_ticket_price",
+   "fieldname": "family_member_ticket_price",
+   "fieldtype": "Read Only",
+   "label": "Family Member Ticket Price"
+  }
+ ],
+ "modified": "2020-07-02 13:24:55.406235",
+ "modified_by": "admin@example.com",
+ "module": "Human Resources",
+ "name": "Leave Entitlement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "employee_english_name",
+ "track_changes": 1
+}

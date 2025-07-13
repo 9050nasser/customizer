@@ -1,0 +1,342 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "OVR-.#####",
+ "creation": "2024-10-06 17:21:11.791153",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_xd7r",
+  "amended_from",
+  "posting_date",
+  "company",
+  "branch_type",
+  "column_break_iiis",
+  "from_date",
+  "to_date",
+  "working_days",
+  "section_break_wtay",
+  "employee",
+  "employee_name",
+  "department",
+  "date_of_joining",
+  "employee_type",
+  "column_break_do0z",
+  "branch",
+  "pay_on",
+  "salary",
+  "hourly_rate",
+  "rate_per_hour",
+  "time_sheets_section",
+  "time_sheets",
+  "section_break_9zdz",
+  "total_working_hours",
+  "column_break_iraa",
+  "total_salary",
+  "per_day",
+  "reason_section",
+  "note"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_xd7r",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Overtime Request",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "section_break_wtay",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Employee",
+   "link_filters": "[[\"Employee\",\"status\",\"=\",\"Active\"]]",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_do0z",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.branch",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "time_sheets_section",
+   "fieldtype": "Section Break",
+   "label": "Time Sheets"
+  },
+  {
+   "fieldname": "time_sheets",
+   "fieldtype": "Table",
+   "label": "Time Sheets",
+   "options": "Time Sheets"
+  },
+  {
+   "fieldname": "section_break_9zdz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_working_hours",
+   "fieldtype": "Data",
+   "label": "Total Working Hours",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reason_section",
+   "fieldtype": "Section Break",
+   "label": "Reason"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pay_on",
+   "fieldtype": "Select",
+   "label": "Pay On",
+   "options": "\nOn Salary\nLeave Day",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_iraa",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.pay_on == \"On Salary\"",
+   "fieldname": "total_salary",
+   "fieldtype": "Currency",
+   "label": "Total Salary",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.pay_on == \"On Salary\"",
+   "fetch_from": "employee.custom_basic_salary",
+   "fieldname": "salary",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Salary",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.pay_on == \"Leave Day\"",
+   "fieldname": "rate_per_hour",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Rate Per Hour",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.pay_on == \"Leave Day\"",
+   "fieldname": "per_day",
+   "fieldtype": "Float",
+   "label": "Per Day",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_iiis",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "working_days",
+   "fieldtype": "Data",
+   "label": "Working Days",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.pay_on == 'On Salary'",
+   "fieldname": "hourly_rate",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Hourly Rate",
+   "read_only": 1
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date"
+  },
+  {
+   "fieldname": "branch_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Branch Type",
+   "options": "\nStore\nClinc\nWhaerhoue",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval: doc.pay_on == \"Leave Day\"",
+   "fetch_from": "employee.date_of_joining",
+   "fieldname": "date_of_joining",
+   "fieldtype": "Date",
+   "label": "Date Of Joining",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.employee_type",
+   "fieldname": "employee_type",
+   "fieldtype": "Select",
+   "label": "Employee Type",
+   "options": "\nEmployee\nLabor",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-03-23 19:25:37.949826",
+ "modified_by": "Administrator",
+ "module": "Employee Self Service",
+ "name": "Overtime Request",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Branch Manager",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee Service",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Ayman Approval",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Qassem Approval",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Mohammd Kher",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

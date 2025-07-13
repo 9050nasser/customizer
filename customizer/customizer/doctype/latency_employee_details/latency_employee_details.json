@@ -1,0 +1,100 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-18 09:30:03.096206",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_8mr1",
+  "employee",
+  "employee_name",
+  "basic_salary",
+  "min_rate",
+  "allow_late_by_min",
+  "total_late",
+  "late_by_min",
+  "net_late",
+  "net_late_in_minutes",
+  "deductions_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_8mr1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "basic_salary",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Basic Salary"
+  },
+  {
+   "fieldname": "total_late",
+   "fieldtype": "Data",
+   "label": "Total Late"
+  },
+  {
+   "fieldname": "deductions_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Deductions Amount"
+  },
+  {
+   "fieldname": "net_late",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Net Late"
+  },
+  {
+   "fieldname": "late_by_min",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Late By Min"
+  },
+  {
+   "fieldname": "min_rate",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Min Rate"
+  },
+  {
+   "fieldname": "allow_late_by_min",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Allow Late By Min"
+  },
+  {
+   "fieldname": "net_late_in_minutes",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Net Late In Minutes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-11-27 18:03:14.298764",
+ "modified_by": "Administrator",
+ "module": "Customizer",
+ "name": "Latency Employee Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

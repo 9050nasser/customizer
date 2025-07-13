@@ -1,0 +1,230 @@
+{
+ "autoname": "naming_series:",
+ "creation": "2020-12-14 09:30:45.303992",
+ "description": "This tool helps you to update or fix the quantity and valuation of stock in the system. It is typically used to synchronise the system values and what actually exists in your warehouses.",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "company",
+  "sb12",
+  "review_stock_reconciliation",
+  "col1",
+  "warehouse",
+  "posting_date",
+  "posting_time",
+  "user",
+  "section_break_9",
+  "items",
+  "expense_account",
+  "reconciliation_json",
+  "difference_amount",
+  "accounting_dimensions_section",
+  "cost_center",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "no_copy": 1,
+   "options": "REV-RESET-.YYYY.-",
+   "print_hide": 1,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "sb12",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "Review Stock Reconciliation",
+   "fieldname": "review_stock_reconciliation",
+   "fieldtype": "Link",
+   "label": "Review Stock Reconciliation",
+   "options": "Review Stock Reconciliation",
+   "reqd": 1
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "oldfieldname": "reconciliation_date",
+   "oldfieldtype": "Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "posting_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Posting Time",
+   "oldfieldname": "reconciliation_time",
+   "oldfieldtype": "Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User"
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "allow_bulk_edit": 1,
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "no_copy": 1,
+   "options": "Stock Reconciliation Item"
+  },
+  {
+   "fetch_from": "review_stock_reconciliation.expense_account",
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Difference Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "reconciliation_json",
+   "fieldtype": "Long Text",
+   "hidden": 1,
+   "label": "Reconciliation JSON",
+   "no_copy": 1,
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "difference_amount",
+   "fieldtype": "Currency",
+   "label": "Difference Amount",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "accounting_dimensions_section",
+   "fieldtype": "Section Break",
+   "label": "Accounting Dimensions"
+  },
+  {
+   "fetch_from": "review_stock_reconciliation.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Reset Stock",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "review_stock_reconciliation.warehouse",
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "remember_last_selected_value": 1,
+   "reqd": 1
+  }
+ ],
+ "icon": "fa fa-upload-alt",
+ "is_submittable": 1,
+ "max_attachments": 1,
+ "modified": "2020-12-17 09:00:28.890870",
+ "modified_by": "Administrator",
+ "module": "Customizer",
+ "name": "Reset Stock",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Stock Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Stock User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Stock Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "posting_date",
+ "show_name_in_global_search": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
